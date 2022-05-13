@@ -10,13 +10,13 @@ With `JSON-minify`, you can maintain developer-friendly JSON documents, but mini
 
 ## Testing
 
-To run the tests in the browser, open `tests.html`.
-
-To run the tests from the command line (with node):
+Compile the tests with the following command:
 
 ```
-cat minify.json.js tests.js | node
+g++ tests.cpp JSON_minify.cpp
 ```
+
+Then run the generated executable.
 
 ## License
 
