@@ -129,10 +129,10 @@ int main(int argc, char* argv[])
 		}
 		{
 			auto start = std::chrono::high_resolution_clock::now();
-			auto len = JSON_minify_c(data(json), json.size(), data(json));
+			std::string res(json);
+			auto len = JSON_minify_c(data(json), json.size(), data(res));
 			auto end = std::chrono::high_resolution_clock::now();
 			auto time = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-			std::string res(json.data(), len);
 			std::cout << "c time " << time << " ms = " << json.size() / time << " chars/ms" << std::endl;
 			std::cout << res.size() << std::endl;
 		}
