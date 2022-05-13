@@ -1,6 +1,17 @@
-var tests = [
-	{
-		source: "\
+#include "JSON_minify.h"
+
+#include <iostream>
+#include <vector>
+
+struct Test
+{
+	std::string source;
+	std::string assert;
+};
+
+std::vector<Test> tests{
+	Test{
+		"\
 			// this is a JSON file with comments\n\
 			{\n\
 				\"foo\": \"bar\",	// this is cool\n\
@@ -17,18 +28,18 @@ var tests = [
 			   from such a file with the JSON.minify() project hosted\n\
 			   here on github at http://github.com/getify/JSON.minify\n\
 			*/\n",
-		assert: "{\"foo\":\"bar\",\"bar\":[\"baz\",\"bum\",\"zam\"],\"something\":10,\"else\":20}"
+		"{\"foo\":\"bar\",\"bar\":[\"baz\",\"bum\",\"zam\"],\"something\":10,\"else\":20}"
 	},
-	{
-		source: "\
+	Test{
+		"\
 			\n\
 			{\"/*\":\"*/\",\"//\":\"\",/*\"//\"*/\"/*/\"://\n\
 			\"//\"}\n\
 			\n",
-		assert: "{\"/*\":\"*/\",\"//\":\"\",\"/*/\":\"//\"}"
+		"{\"/*\":\"*/\",\"//\":\"\",\"/*/\":\"//\"}"
 	},
-	{
-		source: "\
+	Test{
+		"\
 			/*\n\
 			this is a\n\
 			multi line comment */{\n\
@@ -40,23 +51,29 @@ var tests = [
 			something else */\"blah\"\n\
 			\n\
 			}\n",
-		assert: "{\"foo\":\"bar/*\",\"b\\\"az\":\"blah\"}"
+		"{\"foo\":\"bar/*\",\"b\\\"az\":\"blah\"}"
 	},
-	{
-		source: "\
+	Test{
+		"\
 			{\"foo\": \"ba\\\"r//\", \"bar\\\\\": \"b\\\\\\\"a/*z\",\n\
 				\"baz\\\\\\\\\": /* yay */ \"fo\\\\\\\\\\\"*/o\"\n\
 			}\n",
-		assert: "{\"foo\":\"ba\\\"r//\",\"bar\\\\\":\"b\\\\\\\"a/*z\",\"baz\\\\\\\\\":\"fo\\\\\\\\\\\"*/o\"}"
+		"{\"foo\":\"ba\\\"r//\",\"bar\\\\\":\"b\\\\\\\"a/*z\",\"baz\\\\\\\\\":\"fo\\\\\\\\\\\"*/o\"}"
 	}
-];
+};
 
-tests.forEach(function eacher(test,idx){
-	var res = JSON.minify(test.source);
-	if (test.assert !== res) {
-		throw ("Test (" + (idx + 1) + ") failed:\n  " + res);
+// g++ tests.cpp JSON_minify.cpp
+int main()
+{
+	for (size_t idx = 0; idx < tests.size(); idx++)
+	{
+		const auto& test = tests[idx];
+		auto res = JSON_minify(test.source);
+		if (test.assert != res) {
+			std::cout << "Test " << (idx + 1) << " failed:\n" << res << std::endl;
+			return 1;
+		}
+		std::cout << "Test " << (idx + 1) << " passed" << std::endl;
 	}
-	console.log("Test " + (idx + 1) + " passed");
-});
-
-console.log("Done.");
+	std::cout << "Done." << std::endl;
+}
